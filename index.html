@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.9/leaflet-search.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.9/leaflet-search.min.js"></script>
     <link rel="stylesheet" type="text/css" href="1.css">
+    <script src="atribut.js"></script>
+
 </head>
 <body>
     <div class="title-container">
@@ -59,7 +61,7 @@
             <div><i class="line-icon" style="background: red;"></i> Jalur Kereta</div>
             <div style="margin-top: 10px;">
                 <b>Informasi Jalur:</b><br>
-                Rute Madiun-Yogyakarta<br>
+                Rute Yogyakarta-Madiun<br>
                 Panjang: 180 km<br>
                 <span id="station-count"></span>
             </div>
@@ -85,6 +87,24 @@
         var terrain = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         });
+
+        L.geoJSON(daerah,{
+                    style: function(feature) {
+                    switch (feature.properties.PROVINSI) {
+                    case 'DI YOGYAKARTA': return {color: "magenta"};
+                    case 'JAWA TENGAH': return {color: "blue"};
+                    case 'JAWA TIMUR': return {color: "purple"};
+                    }
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(
+                        'Darah ini adalah ' +
+                        '<strong>' +
+                        feature.properties.KAB_KOTA +
+                        '</strong>'+ ' yang berada di Provinsi ' + '<strong>' + feature.properties.PROVINSI + '</strong>'
+                        );
+                    }
+                    }).addTo(map);
         
         // Gunakan ikon yang sama untuk semua stasiun
         var stationIcon = L.icon({
@@ -94,33 +114,6 @@
             popupAnchor: [10, 10] 
         });
         
-        // Data stasiun
-        var stations = [
-            { name: "MAGUWO", code: "MGW", lat: -7.78497, lon: 110.437, province: "DI YOGYAKARTA", district: "KAB. SLEMAN", kelas: "II", operator: "KAI Commuter", img : "images/MGW.jpg" },
-            { name: "LEMPUYANGAN", code: "LPN", lat: -7.7901, lon: 110.3748, province: "DI YOGYAKARTA", district: "KOTA YOGYAKARTA", kelas: "B", operator: "KAI, KAI Commuter, KAI Logistik", img : "images/LPN.jpg"  },
-            { name: "TUGU", code: "YK", lat: -7.78918, lon: 110.3636, province: "DI YOGYAKARTA", district: "KOTA YOGYAKARTA", kelas: "A", operator: "KAI, KAI Commuter, KAI Bandara", img : "images/TUGU.jpg"  },
-            { name: "Kebon Romo", code: "KRO", lat: -7.41907, lon: 111.064, province: "JAWA TENGAH", district: "KAB. SRAGEN", kelas: "III", operator: "KAI", img : "images/KRO.jpg"  },
-            { name: "KLATEN", code: "KT", lat: -7.71228, lon: 110.603, province: "JAWA TENGAH", district: "KAB. KLATEN", kelas: "I", operator: "KAI, KAI Commuter", img : "images/KT.jpeg"  },
-            { name: "Ceper", code: "CE", lat: -7.66901, lon: 110.675, province: "JAWA TENGAH", district: "KAB. KLATEN", kelas: "II", operator: "KAI Commuter", img : "images/CE.jpg"  },
-            { name: "Delanggu", code: "DL", lat: -7.62207, lon: 110.7066, province: "JAWA TENGAH", district: "KAB. KLATEN", kelas: "III", operator: "KAI Commuter", img : "images/DL.jpg"  },
-            { name: "Srowot", code: "SWT", lat: -7.74127, lon: 110.5494, province: "JAWA TENGAH", district: "KAB. KLATEN", kelas: "III", operator: "KAI Commuter", img : "images/SWT.jpg"  },
-            { name: "BRAMBANAN", code: "BBN", lat: -7.75647, lon: 110.5004, province: "JAWA TENGAH", district: "KAB. KLATEN", kelas: "III", operator: "KAI Commuter", img : "images/BBN.jpeg"  },
-            { name: "Gawok", code: "GW", lat: -7.58942, lon: 110.7444, province: "JAWA TENGAH", district: "KAB. SUKOHARJO", kelas: "III", operator: "KAI", img : "images/GW.jpg"  },
-            { name: "Kemiri", code: "KMR", lat: -7.534, lon: 110.9014, province: "JAWA TENGAH", district: "KAB. KARANGANYAR", kelas: "III", operator: "KAI", img : "images/KMR.jpg"  },
-            { name: "Palur", code: "PL", lat: -7.56818, lon: 110.8756, province: "JAWA TENGAH", district: "KAB. KARANGANYAR", kelas: "III", operator: "KAI Commuter", img : "images/PL.jpg"  },
-            { name: "SRAGEN", code: "SR", lat: -7.42938, lon: 111.018, province: "JAWA TENGAH", district: "KAB. SRAGEN", kelas: "II", operator: "KAI", img : "images/SR.jpg"  },
-            { name: "Kedungbanteng", code: "KDB", lat: -7.40521, lon: 111.1172, province: "JAWA TENGAH", district: "KAB. SRAGEN", kelas: "III", operator: "KAI", img : "images/KDB.jpg"  },
-            { name: "Masaran", code: "MSR", lat: -7.46808, lon: 110.9478, province: "JAWA TENGAH", district: "KAB. SRAGEN", kelas: "III", operator: "KAI", img : "images/MSR.jpg"  },
-            { name: "PURWOSARI", code: "PWS", lat: -7.56177, lon: 110.7964, province: "JAWA TENGAH", district: "KOTA SURAKARTA", kelas: "C", operator: "KAI, KAI Commuter", img : "images/PWS.jpg"  },
-            { name: "SOLO JEBRES", code: "SK", lat: -7.56207, lon: 110.8394, province: "JAWA TENGAH", district: "KOTA SURAKARTA", kelas: "C", operator: "KAI, KAI Commuter", img : "images/SK.jpeg"  },
-            { name: "SOLO BALAPAN", code: "SLO", lat: -7.55719, lon: 110.8214, province: "JAWA TENGAH", district: "KOTA SURAKARTA", kelas: "A", operator: "KAI, KAI Commuter", img : "images/SLO.jpeg"  },
-            { name: "MAGETAN", code: "MAG", lat: -7.56209, lon: 111.4512, province: "JAWA TIMUR", district: "KAB. MAGETAN", kelas: "II", operator: "KAI", img : "images/MAG.jpg"  },
-            { name: "GENENG", code: "GG", lat: -7.49786, lon: 111.4188, province: "JAWA TIMUR", district: "KAB. NGAWI", kelas: "III", operator: "KAI", img : "images/GG.jpg"  },
-            { name: "KEDUNGGALAR", code: "KG", lat: -7.41827, lon: 111.3068, province: "JAWA TIMUR", district: "KAB. NGAWI", kelas: "III", operator: "KAI", img : "images/KG.jpg"  },
-            { name: "NGAWI", code: "NGW", lat: -7.44226, lon: 111.387, province: "JAWA TIMUR", district: "KAB. NGAWI", kelas: "II", operator: "KAI", img : "images/NGW.jpg"  },
-            { name: "WALIKUKUN", code: "WK", lat: -7.39868, lon: 111.2246, province: "JAWA TIMUR", district: "KAB. NGAWI", kelas: "III", operator: "KAI", img : "images/WK.jpg"  },
-            { name: "MADIUN", code: "MN", lat: -7.61841, lon: 111.525, province: "JAWA TIMUR", district: "KOTA MADIUN", kelas: "A", operator: "KAI", img : "images/MN.jpg"  }
-        ];
 
         // Update station count in legend
         document.getElementById('station-count').innerText = "Jumlah Stasiun: " + stations.length;
@@ -187,80 +180,6 @@
         
         map.addLayer(markers);
          
-        // Data koordinat rel kereta dari input yang diberikan
-        var rute = [
-            [110.3634471, -7.789213969999992],
-            [110.36782009999999, -7.789828940000007],
-            [110.3711273187975, -7.790174470599768],
-            [110.37310672472995, -7.790089203713178],
-            [110.383544, -7.789406279999992],
-            [110.45039976415062, -7.783925271686456],
-            [110.45210101945452, -7.783471461513748],
-            [110.465126, -7.774808700000005],
-            [110.49322979336085, -7.75632787373777],
-            [110.50038089999997, -7.7566431699999905],
-            [110.51694275518105, -7.758236264590922],
-            [110.51831684600344, -7.757963961885701],
-            [110.55320919999997, -7.739296439999995],
-            [110.6030949, -7.712489889999999],
-            [110.61919691438766, -7.703397105068994],
-            [110.62201380057361, -7.701218395463917],
-            [110.6237314141016, -7.699856696271431],
-            [110.62522610932407, -7.69906681294854],
-            [110.62842102343085, -7.698299269665422],
-            [110.64831826369206, -7.687132064452723],
-            [110.67718944785163, -7.667335402931669],
-            [110.67853234333589, -7.665866518297322],
-            [110.69100599999997, -7.646849589999998],
-            [110.70247990204612, -7.629423459444439],
-            [110.70363413833692, -7.626420400593951],
-            [110.70536549277315, -7.6242038436374715],
-            [110.71539292054963, -7.610260722302309],
-            [110.7443997, -7.589433830000001],
-            [110.77686746008187, -7.566531420933174],
-            [110.77785401398017, -7.565925444638176],
-            [110.77927668839753, -7.565403115195384],
-            [110.79587339999999, -7.561647859999988],
-            [110.7972049, -7.561413880000008],
-            [110.82424109999998, -7.556194359999994],
-            [110.82974862506698, -7.5567325862240855],
-            [110.83225499253797, -7.557336947963583],
-            [110.83367752542689, -7.5586799710232535],
-            [110.83496457899305, -7.560291593180755],
-            [110.83613041449776, -7.560920250312241],
-            [110.8403856, -7.562353629999994],
-            [110.84341779356855, -7.563276700520827],
-            [110.85234390493086, -7.565347258420923],
-            [110.86556279180121, -7.570307433352223],
-            [110.86787796407792, -7.570381465381722],
-            [110.87546979999996, -7.568052019999996],
-            [110.88020484308063, -7.56594281385204],
-            [110.8822166415221, -7.563948525559182],
-            [110.90209219999996, -7.533414289999991],
-            [110.94122764632279, -7.47320572737881],
-            [110.94366066031093, -7.471252870304275],
-            [110.94766509999997, -7.4681150600000015],
-            [110.96889266225315, -7.4518130279811405],
-            [110.9788948308648, -7.445637817030392],
-            [111.00112569685479, -7.4324121905878],
-            [111.017857, -7.429372090000001],
-            [111.03575206137765, -7.426508091080073],
-            [111.0639294, -7.419057889999994],
-            [111.1171365, -7.405256109999991],
-            [111.12991409999997, -7.400933039999986],
-            [111.15263468386048, -7.39083110920445],
-            [111.162598455431, -7.38945236423836],
-            [111.22476209999999, -7.398917899999999],
-            [111.25865310401495, -7.404458991050845],
-            [111.30678279999998, -7.418455750000007],
-            [111.39352709744782, -7.444570348471379],
-            [111.3963371641397, -7.447574845099788],
-            [111.44529883454577, -7.5568280360551485],
-            [111.5110873050448, -7.61740015276486],
-            [111.51471841004116, -7.618771221691429],
-            [111.52505409999999, -7.618708199999998]
-        ];
-
         // Persiapkan array koordinat yang kompatibel dengan Leaflet
         var railwayLatLngs = rute.map(function(coord) {
             return [coord[1], coord[0]]; // Balik urutan karena Leaflet menggunakan [lat, lng]
@@ -287,59 +206,6 @@
         
         railwayLine.bindPopup("<b>Jalur Kereta Api</b><br>Rute Madiun-Yogyakarta");
         
-        // SVG untuk kereta
-        var trainSvgString = `
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70px" height="70px" viewBox="0 0 500 500" xml:space="preserve">
-        <path class="st0" d="M459.4,308.6V180.1h-1.1h-95.7v-12.7H233.3v12.7H41.6h-1.1v8.2h1.1v120.3h48.9c-0.1,0.1-0.2,0.1-0.2,0.2H41.6
-		v7.6H85c-0.3,1-0.4,2.1-0.4,3.2c0,7.2,5.8,13,13,13s13-5.8,13-13c0-1.1-0.1-2.2-0.4-3.2h47.8c-0.3,1-0.4,2.1-0.4,3.2
-		c0,7.2,5.8,13,13,13c7.2,0,13-5.8,13-13c0-1.1-0.1-2.2-0.4-3.2h134.3c-0.3,1-0.4,2.1-0.4,3.2c0,7.2,5.8,13,13,13s13-5.8,13-13
-		c0-1.1-0.1-2.2-0.4-3.2h47.8c-0.3,1-0.4,2.1-0.4,3.2c0,7.2,5.8,13,13,13c7.2,0,13-5.8,13-13c0-1.1-0.1-2.2-0.4-3.2h43.4v-7.6h-48.6
-		c-0.1-0.1-0.2-0.1-0.2-0.2H459.4z M323.2,308.6c-0.1,0.1-0.2,0.1-0.2,0.2H178.2c-0.1-0.1-0.2-0.1-0.2-0.2H323.2z M104.8,308.6h58.8
-		c-0.1,0.1-0.2,0.1-0.2,0.2h-58.3C105,308.7,104.9,308.7,104.8,308.6z M396,308.8h-58.3c-0.1-0.1-0.2-0.1-0.2-0.2h58.8
-		C396.2,308.7,396.1,308.7,396,308.8z"/>
-        <g>
-            <rect x="41.6" y="308.8" class="st1" width="417.8" height="7.6"/>
-            <g>
-                <circle class="st2" cx="170.8" cy="319.5" r="13"/>
-                <circle class="st3" cx="170.8" cy="319.5" r="6.5"/>
-            </g>
-            <g>
-                <circle class="st2" cx="97.7" cy="319.5" r="13"/>
-                <circle class="st3" cx="97.7" cy="319.5" r="6.5"/>
-            </g>
-            <g>
-                <circle class="st2" cx="403.4" cy="319.5" r="13"/>
-                <circle class="st3" cx="403.4" cy="319.5" r="6.5"/>
-            </g>
-            <g>
-                <circle class="st2" cx="330.3" cy="319.5" r="13"/>
-                <circle class="st3" cx="330.3" cy="319.5" r="6.5"/>
-            </g>
-            <rect x="41.6" y="180.1" class="st4" width="417.8" height="128.5"/>
-            <rect x="233.3" y="167.5" class="st5" width="129.3" height="12.7"/>
-            <rect x="123.6" y="204.5" class="st6" width="83.3" height="41.3"/>
-            <g>
-                <rect x="57.7" y="199.5" class="st7" width="26" height="99.2"/>
-                <rect x="62.9" y="204.5" class="st6" width="16.9" height="41.3"/>
-                <rect x="86.4" y="199.5" class="st7" width="26" height="99.2"/>
-                <rect x="90.2" y="204.5" class="st6" width="16.9" height="41.3"/>
-            </g>
-            <rect x="40.6" y="180.1" class="st7" width="417.8" height="8.2"/>
-            <g>
-                <rect x="219" y="199.5" class="st7" width="26" height="99.2"/>
-                <rect x="224.2" y="204.5" class="st6" width="16.9" height="41.3"/>
-                <rect x="247.6" y="199.5" class="st7" width="26" height="99.2"/>
-                <rect x="251.5" y="204.5" class="st6" width="16.9" height="41.3"/>
-            </g>
-            <rect x="284.9" y="204.5" class="st6" width="83.3" height="41.3"/>
-            <g>
-                <rect x="380.2" y="199.5" class="st7" width="26" height="99.2"/>
-                <rect x="385.5" y="204.5" class="st6" width="16.9" height="41.3"/>
-                <rect x="408.9" y="199.5" class="st7" width="26" height="99.2"/>
-                <rect x="412.8" y="204.5" class="st6" width="16.9" height="41.3"/>
-            </g>
-        </g>
-        </svg>`;
         
         // Membuat ikon kereta dengan SVG
         var trainIcon = L.divIcon({
@@ -439,7 +305,7 @@ function animateTrain() {
             .setLatLng(map.getCenter())
             .setContent(`
                 <h3>Tentang Peta</h3>
-                <p>Peta ini menampilkan rute kereta api dari Madiun ke Yogyakarta, melintasi beberapa kota di Jawa Timur, Jawa Tengah, dan DI Yogyakarta.</p>
+                <p>Peta ini menampilkan rute kereta api dari Yogyakarta ke Madiun, melintasi beberapa kota di Jawa Timur, Jawa Tengah, dan DI Yogyakarta.</p>
                 <p>Fitur utama peta ini meliputi:</p>
                 <ul>
                     <li>Visualisasi rute kereta api</li>
@@ -644,7 +510,6 @@ function animateTrain() {
             .setLatLng(map.getCenter())
             .setContent(`
                 <h3>Informasi Basemap</h3>
-                <img src="/api/placeholder/280/150" alt="Map layers" />
                 <p>Anda dapat memilih beberapa jenis peta dasar:</p>
                 <ul>
                     <li><b>OpenStreetMap</b>: Peta standar dengan informasi jalan</li>
